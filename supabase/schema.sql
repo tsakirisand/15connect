@@ -93,50 +93,52 @@ ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ideas ENABLE ROW LEVEL SECURITY;
 
--- Allow public reading of school metadata by invite_code for onboarding/joining
-CREATE POLICY "Allow public read of school by invite code"
-  ON public.schools FOR SELECT
-  USING (true);
+-- 1. SCHOOLS POLICIES
+DROP POLICY IF EXISTS "Allow public select of schools" ON public.schools;
+CREATE POLICY "Allow public select of schools" ON public.schools FOR SELECT USING (true);
 
-CREATE POLICY "Allow members to read their school details"
-  ON public.schools FOR SELECT
-  USING (
-    id IN (
-      SELECT school_id FROM public.school_members
-      WHERE user_uid = current_setting('request.jwt.claims', true)::json->>'sub'
-    )
-  );
+DROP POLICY IF EXISTS "Allow public insert of schools" ON public.schools;
+CREATE POLICY "Allow public insert of schools" ON public.schools FOR INSERT WITH CHECK (true);
 
--- School member access policy
-CREATE POLICY "Allow members to view co-members in their school"
-  ON public.school_members FOR SELECT
-  USING (
-    school_id IN (
-      SELECT school_id FROM public.school_members
-      WHERE user_uid = current_setting('request.jwt.claims', true)::json->>'sub'
-    )
-  );
+DROP POLICY IF EXISTS "Allow public update of schools" ON public.schools;
+CREATE POLICY "Allow public update of schools" ON public.schools FOR UPDATE USING (true);
 
-CREATE POLICY "Allow users to join a school as member"
-  ON public.school_members FOR INSERT
-  WITH CHECK (true);
+-- 2. SCHOOL MEMBERS POLICIES
+DROP POLICY IF EXISTS "Allow public select of school_members" ON public.school_members;
+CREATE POLICY "Allow public select of school_members" ON public.school_members FOR SELECT USING (true);
 
--- Announcements policy: all members of a school can view, only admins can modify
-CREATE POLICY "School members can view announcements"
-  ON public.announcements FOR SELECT
-  USING (true);
+DROP POLICY IF EXISTS "Allow public insert of school_members" ON public.school_members;
+CREATE POLICY "Allow public insert of school_members" ON public.school_members FOR INSERT WITH CHECK (true);
 
--- Events policy: all members of a school can view, only admins can modify
-CREATE POLICY "School members can view events"
-  ON public.events FOR SELECT
-  USING (true);
+DROP POLICY IF EXISTS "Allow public update of school_members" ON public.school_members;
+CREATE POLICY "Allow public update of school_members" ON public.school_members FOR UPDATE USING (true);
 
--- Ideas policy: students can view ONLY their own submitted ideas; admins can view all school ideas
-CREATE POLICY "Students see own ideas or admins see school ideas"
-  ON public.ideas FOR SELECT
-  USING (true);
+-- 3. ANNOUNCEMENTS POLICIES
+DROP POLICY IF EXISTS "Allow public select of announcements" ON public.announcements;
+CREATE POLICY "Allow public select of announcements" ON public.announcements FOR SELECT USING (true);
 
--- STORAGE BUCKETS FOR SUPABASE STORAGE
--- Run these statements in Supabase SQL Editor if buckets do not exist:
--- INSERT INTO storage.buckets (id, name, public) VALUES ('school-assets', 'school-assets', true);
--- INSERT INTO storage.buckets (id, name, public) VALUES ('event-images', 'event-images', true);
+DROP POLICY IF EXISTS "Allow public insert of announcements" ON public.announcements;
+CREATE POLICY "Allow public insert of announcements" ON public.announcements FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public delete of announcements" ON public.announcements;
+CREATE POLICY "Allow public delete of announcements" ON public.announcements FOR DELETE USING (true);
+
+-- 4. EVENTS POLICIES
+DROP POLICY IF EXISTS "Allow public select of events" ON public.events;
+CREATE POLICY "Allow public select of events" ON public.events FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public insert of events" ON public.events;
+CREATE POLICY "Allow public insert of events" ON public.events FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public delete of events" ON public.events;
+CREATE POLICY "Allow public delete of events" ON public.events FOR DELETE USING (true);
+
+-- 5. IDEAS POLICIES
+DROP POLICY IF EXISTS "Allow public select of ideas" ON public.ideas;
+CREATE POLICY "Allow public select of ideas" ON public.ideas FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public insert of ideas" ON public.ideas;
+CREATE POLICY "Allow public insert of ideas" ON public.ideas FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public update of ideas" ON public.ideas;
+CREATE POLICY "Allow public update of ideas" ON public.ideas FOR UPDATE USING (true);

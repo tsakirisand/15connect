@@ -300,13 +300,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // 2. Query Supabase DB for school with invite_code = cleanCode
     try {
-      const { data: dbSchool, error } = await supabase
+      const { data: schoolsList, error } = await supabase
         .from('schools')
         .select('*')
-        .eq('invite_code', cleanCode)
-        .single();
+        .eq('invite_code', cleanCode);
 
-      if (dbSchool) {
+      if (error) {
+        console.error('Supabase search error:', error.message);
+      }
+
+      if (schoolsList && schoolsList.length > 0) {
+        const dbSchool = schoolsList[0];
         const foundSchool: School = {
           id: dbSchool.id,
           name: dbSchool.name,
