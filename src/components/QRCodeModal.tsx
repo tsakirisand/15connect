@@ -19,7 +19,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ isOpen, onClose, invit
 
   const joinUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/register?role=student&code=${inviteCode}`
-    : `https://15connect.gr/register?role=student&code=${inviteCode}`;
+    : `https://15connect.vercel.app/register?role=student&code=${inviteCode}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(joinUrl);
