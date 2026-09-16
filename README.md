@@ -1,6 +1,6 @@
 # 15Connect 🎓
 
-> **Η σύγχρονη ψηφιακή πλατφόρμα για τα 15μελή Μαθητικά Συμβούλια των ελληνικών σχολείων.**
+> **The modern digital web platform for Greek high school student councils ("15-member councils").**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react)](https://react.dev/)
@@ -11,74 +11,74 @@
 
 ---
 
-## 🌟 Επισκόπηση (Overview)
+## 🌟 Overview
 
-Το **15Connect** είναι μια πολυ-μισθωτική (multi-tenant) διαδικτυακή πλατφόρμα σχεδιασμένη ειδικά για τα 15μελή μαθητικά συμβούλια των ελληνικών γυμνασίων και λυκείων. 
+**15Connect** is a modern multi-tenant web platform engineered specifically for Greek high school student councils (*15-μελή συμβούλια*).
 
-Παρέχει έναν ασφαλή, ιδιωτικό ψηφιακό χώρο για κάθε σχολείο, όπου ο Πρόεδρος και το συμβούλιο μπορούν να δημοσιεύουν ανακοινώσεις, να οργανώνουν εκδηλώσεις και να διαχειρίζονται τις προτάσεις των μαθητών, ενώ οι μαθητές αποκτούν άμεση ενημέρωση και φωνή.
-
----
-
-## ✨ Βασικά Χαρακτηριστικά (Features)
-
-### 1. 🔐 Αυθεντικοποίηση & Ρόλοι (Auth & Security)
-- **Firebase Authentication**: Σύνδεση & Εγγραφή με email και κωδικό πρόσβασης.
-- **Διακριτοί Ρόλοι**:
-  - **Πρόεδρος / Admin**: Δημιουργεί και διαχειρίζεται το χώρο του σχολείου, δημοσιεύει ανακοινώσεις/εκδηλώσεις, απαντά σε προτάσεις μαθητών.
-  - **Μαθητής / Student**: Εγγράφεται με τον 4-ψήφιο κωδικό πρόσκλησης του σχολείου του, παρακολουθεί την ενημέρωση και υποβάλλει ιδέες.
-
-### 2. 🏫 Δημιουργία Σχολείου & Προσκλήσεις (Onboarding & Invites)
-- **Δημιουργία Χώρου Σχολείου**: Ο Πρόεδρος ορίζει όνομα σχολείου, λογότυπο, περιγραφή και στοιχεία επικοινωνίας.
-- **Αυτόματος 4-Ψήφιος Κωδικός**: Παραγωγή μοναδικού κωδικού πρόσκλησης (π.χ. `VMD2`).
-- **Downloadable QR Code**: Αυτόματη παραγωγή εικόνας PNG του QR Code για εκτύπωση στον πίνακα ανακοινώσεων του σχολείου.
-- **Αυστηρή Προστασία Πρόσβασης**: Κανένας χρήστης δεν αποκτά πρόσβαση στο σχολείο χωρίς έγκυρο κωδικό πρόσκλησης.
-
-### 3. 📢 Ανακοινώσεις & Νέα (Announcements Feed)
-- Δημοσίευση επίσημων ανακοινώσεων με κατηγοριοποίηση (*Γενικά, Εκδηλώσεις, Αθλητισμός, Εκδρομές, Θέματα Σχολείου*).
-- Δυνατότητα καρφιτσώματος (Pinning) σημαντικών ανακοινώσεων στην κορυφή.
-
-### 4. 📅 Ημερολόγιο Εκδηλώσεων (School Events)
-- Προγραμματισμός εκδηλώσεων με ημερομηνία, ώρα, τοποθεσία, εικόνα και εξωτερικούς συνδέσμους εγγραφής.
-
-### 5. 💡 Προτάσεις Μαθητών & Ιδιωτικότητα (Student Ideas Portal)
-- Οι μαθητές υποβάλλουν ιδέες για τη βελτίωση του σχολείου.
-- **Ιδιωτικότητα**: Ο κάθε μαθητής βλέπει **αποκλειστικά και μόνο τις δικές του προτάσεις** και την εξέλιξή τους (*Νέα, Υπό εξέταση, Εγκρίθηκε, Απορρίφθηκε*) μαζί με την επίσημη απάντηση του 15μελούς.
-
-### 6. 🛡️ Πίνακας Διαχείρισης Προέδρου (Admin Control Panel)
-- Πλήρης πίνακας ελέγχου 5 καρτελών για τον Πρόεδρο:
-  1. *Πρόσκληση & QR Code*
-  2. *Διαχείριση Ανακοινώσεων*
-  3. *Διαχείριση Εκδηλώσεων*
-  4. *Διαχείριση & Απάντηση σε Προτάσεις Μαθητών*
-  5. *Λίστα Εγγεγραμμένων Μελών & Ρυθμίσεις Σχολείου*
+It provides a secure, private digital space for each school. Council Presidents can post official announcements, schedule school events, and manage student suggestions, while students gain instant access to school updates and a private feedback channel.
 
 ---
 
-## 🛠️ Τεχνολογικό Στάκ (Tech Stack)
+## ✨ Key Features
 
-- **Frontend Framework**: [Next.js 15 (App Router)](https://nextjs.org/) με [React 19](https://react.dev/) & [TypeScript](https://www.typescriptlang.org/)
+### 1. 🔐 Authentication & Role Security
+- **Firebase Authentication**: Email & password account creation and sign-in.
+- **Role Enforcement**:
+  - **President / Admin**: Creates and manages the school profile, publishes news/events, and responds to student ideas.
+  - **Student**: Registers with a valid 4-character school invitation code, follows news, and submits suggestions.
+
+### 2. 🏫 School Onboarding & Invitation System
+- **School Profile Creation**: Presidents configure school name, logo, description, theme, and contact info.
+- **Automatic 4-Character Invitation Code**: Generates a unique 4-character code (e.g. `VMD2`) and invite link (`/register?role=student&code=VMD2`).
+- **Downloadable PNG QR Code**: Instant high-resolution PNG QR Code generator ready for printing on school notice boards.
+- **Strict Access Protection**: Students cannot join a school space without a valid invitation code.
+
+### 3. 📢 News & Announcements Feed
+- Categorized news posts (*General, Events, Sports, Trips, School Topics*).
+- Pinning capability for urgent or high-priority announcements.
+
+### 4. 📅 School Life Calendar & Events
+- Event scheduling with date, time, location, cover image, and external registration links.
+
+### 5. 💡 Student Suggestions & Privacy Isolation
+- Students submit ideas for school improvements.
+- **Privacy Enforcement**: Each student sees **ONLY their own submitted suggestions**, tracking real-time status updates (*New, Under Review, Accepted, Rejected*) and official council responses.
+
+### 6. 🛡️ President Admin Dashboard
+- Full 5-tab control panel for Council Presidents:
+  1. *Invites & Downloadable QR Code*
+  2. *Announcements Management*
+  3. *Events Management*
+  4. *Student Ideas & Response Management*
+  5. *Registered Members List & School Settings*
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: [Next.js 15 (App Router)](https://nextjs.org/) with [React 19](https://react.dev/) & [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & [Lucide Icons](https://lucide.dev/)
 - **Authentication**: [Firebase Auth](https://firebase.google.com/docs/auth)
-- **Database & Storage**: [Supabase PostgreSQL](https://supabase.com/) με Row-Level Security (RLS) policies
+- **Database & Storage**: [Supabase PostgreSQL](https://supabase.com/) with Row-Level Security (RLS) policies
 - **QR Code Generator**: `qrcode.react` (SVG & Canvas PNG Download)
 
 ---
 
-## 🚀 Οδηγός Εγκατάστασης & Εκτέλεσης (Getting Started)
+## 🚀 Getting Started
 
-### 1. Απαιτήσεις (Prerequisites)
+### 1. Prerequisites
 - [Node.js](https://nodejs.org/) >= v20.x
-- [npm](https://www.npmjs.com/) ή `pnpm`
+- [npm](https://www.npmjs.com/) or `pnpm`
 
-### 2. Κλωνοποίηση & Εγκατάσταση Εξαρτήσεων
+### 2. Clone & Install Dependencies
 ```bash
-git clone https://github.com/your-username/15connect.git
+git clone https://github.com/tsakirisand/15connect.git
 cd 15connect
 npm install
 ```
 
-### 3. Ρύθμιση Μεταβλητών Περιβάλλοντος (`.env.local`)
-Δημιουργήστε ένα αρχείο `.env.local` στη ρίζα του έργου:
+### 3. Environment Variables (`.env.local`)
+Create a `.env.local` file in the project root:
 
 ```env
 # Firebase Configuration
@@ -96,23 +96,23 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 ```
 
-### 4. Ρύθμιση Βάσης Δεδομένων Supabase
-Εκτελέστε το script `supabase/schema.sql` στον **SQL Editor** του Supabase για να δημιουργήσετε τους πίνακες και τα RLS policies:
+### 4. Supabase Database Setup
+Execute the SQL script in `supabase/schema.sql` inside your **Supabase SQL Editor** to create tables, indexes, and RLS policies:
 - `schools`
 - `school_members`
 - `announcements`
 - `events`
 - `ideas`
 
-### 5. Εκτέλεση σε Τοπικό Server (Development)
+### 5. Run Development Server
 ```bash
 npm run dev
 ```
-Η εφαρμογή θα είναι διαθέσιμη στη διεύθυνση [http://localhost:3005](http://localhost:3005) (ή στο καθορισμένο port).
+Open [http://localhost:3005](http://localhost:3005) in your browser.
 
 ---
 
-## 📂 Δομή Έργου (Project Structure)
+## 📂 Project Structure
 
 ```
 15connect/
@@ -120,24 +120,24 @@ npm run dev
 │   └── schema.sql              # Supabase DDL, RLS policies & indexes
 ├── src/
 │   ├── app/
-│   │   ├── admin/page.tsx      # Πίνακας Διαχείρισης Προέδρου
-│   │   ├── announcements/page.tsx # Ροή Ανακοινώσεων
-│   │   ├── dashboard/page.tsx  # Κεντρικός Χώρος Σχολείου
-│   │   ├── events/page.tsx     # Ημερολόγιο Εκδηλώσεων
-│   │   ├── ideas/page.tsx      # Πύλη Προτάσεων Μαθητών
-│   │   ├── join/               # Είσοδος με 4-ψήφιο κωδικό / QR link
-│   │   ├── login/page.tsx      # Σύνδεση Χρήστη
-│   │   ├── onboarding/create-school/page.tsx # Δημιουργία Σχολείου
-│   │   ├── register/page.tsx   # Εγγραφή Χρήστη
+│   │   ├── admin/page.tsx      # President Admin Control Dashboard
+│   │   ├── announcements/page.tsx # Announcements Feed
+│   │   ├── dashboard/page.tsx  # Main School Space Hub
+│   │   ├── events/page.tsx     # Events Calendar
+│   │   ├── ideas/page.tsx      # Student Ideas Submission Portal
+│   │   ├── join/               # Join School Flow by code
+│   │   ├── login/page.tsx      # User Login
+│   │   ├── onboarding/create-school/page.tsx # School Setup Flow
+│   │   ├── register/page.tsx   # User Registration (Student & President)
 │   │   ├── globals.css         # Styling & Tailwind setup
-│   │   └── layout.tsx          # Root layout & ελληνικά metadata
+│   │   └── layout.tsx          # Root layout & Metadata
 │   ├── components/
-│   │   ├── Footer.tsx          # Minimal footer με διακριτική επιλογή Προέδρου
-│   │   ├── IdeaStatusBadge.tsx # Badging κατάστασης ιδεών
-│   │   ├── Navbar.tsx          # Καθαρή πλοήγηση
-│   │   └── QRCodeModal.tsx     # Downloadable PNG QR Code Generator
+│   │   ├── Footer.tsx          # Minimal footer with discrete President link
+│   │   ├── IdeaStatusBadge.tsx # Status badges for student ideas
+│   │   ├── Navbar.tsx          # Navigation header
+│   │   └── QRCodeModal.tsx     # Downloadable PNG QR Code Generator Modal
 │   ├── context/
-│   │   └── AuthContext.tsx     # State management αυθεντικοποίησης & δεδομένων
+│   │   └── AuthContext.tsx     # State management for auth & data
 │   ├── lib/
 │   │   ├── firebase.ts         # Firebase SDK initialization
 │   │   └── supabase.ts         # Supabase client setup
@@ -150,12 +150,12 @@ npm run dev
 
 ---
 
-## 📜 Άδεια Χρήσης (License)
+## 📜 License
 
-Αυτό το έργο διατίθεται υπό την άδεια [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-<p center align="center">
-  Φτιαγμένο με ❤️ για τα ελληνικά μαθητικά συμβούλια.
+<p align="center">
+  Built with ❤️ for Greek school student councils.
 </p>
