@@ -2,6 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, School, SchoolMember, Announcement, SchoolEvent, StudentIdea, UserRole } from '@/types';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+} from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -11,9 +19,9 @@ interface AuthContextType {
   events: SchoolEvent[];
   ideas: StudentIdea[];
   loading: boolean;
-  login: (email: string, role: UserRole, schoolCode?: string) => Promise<boolean>;
-  logout: () => void;
-  register: (fullName: string, email: string, role: UserRole) => Promise<boolean>;
+  login: (email: string, pass: string, role: UserRole, schoolCode?: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  register: (fullName: string, email: string, pass: string, role: UserRole) => Promise<boolean>;
   createSchool: (schoolData: Omit<School, 'id' | 'invite_code' | 'created_by_uid' | 'created_at'>) => Promise<School>;
   joinSchoolByCode: (code: string) => Promise<boolean>;
   addAnnouncement: (announcement: Omit<Announcement, 'id' | 'created_at' | 'school_id'>) => void;
@@ -36,26 +44,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [ideas, setIdeas] = useState<StudentIdea[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Initialize data strictly from LocalStorage
+  // Initialize Firebase Auth listener & local state
   useEffect(() => {
     try {
       const savedSchool = localStorage.getItem('15connect_school');
-      const savedUser = localStorage.getItem('15connect_user');
       const savedAnnouncements = localStorage.getItem('15connect_announcements');
       const savedEvents = localStorage.getItem('15connect_events');
       const savedIdeas = localStorage.getItem('15connect_ideas');
       const savedMembers = localStorage.getItem('15connect_members');
 
       if (savedSchool) setCurrentSchool(JSON.parse(savedSchool));
-      if (savedUser) setUser(JSON.parse(savedUser));
       if (savedAnnouncements) setAnnouncements(JSON.parse(savedAnnouncements));
       if (savedEvents) setEvents(JSON.parse(savedEvents));
       if (savedIdeas) setIdeas(JSON.parse(savedIdeas));
       if (savedMembers) setMembers(JSON.parse(savedMembers));
     } catch (e) {
-      console.error('Error loading 15connect state:', e);
+      console.error('Error loading stored school state:', e);
     }
-    setLoading(false);
+
+    const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
+      if (fbUser) {
+        const savedUserStr = localStorage.getItem('15connect_user');
+        const savedUser = savedUserStr ? JSON.parse(savedUserStr) : null;
+
+        const profile: UserProfile = {
+          uid: fbUser.uid,
+          email: fbUser.email || '',
+          fullName: fbUser.displayName || savedUser?.fullName || 'Χρήστης 15Connect',
+          role: savedUser?.role || 'student',
+          schoolId: savedUser?.schoolId,
+        };
+        setUser(profile);
+        localStorage.setItem('15connect_user', JSON.stringify(profile));
+      } else {
+        setUser(null);
+        localStorage.removeItem('15connect_user');
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const saveSchool = (sch: School | null) => {
@@ -93,37 +121,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('15connect_members', JSON.stringify(list));
   };
 
-  // Auth Operations
-  const login = async (email: string, role: UserRole, schoolCode?: string): Promise<boolean> => {
-    const isPresident = role === 'admin';
-    const newUser: UserProfile = {
-      uid: `uid-${Date.now()}`,
-      email,
-      fullName: isPresident ? 'Πρόεδρος 15μελούς' : 'Μαθητής',
-      role,
-      schoolId: currentSchool?.id,
-    };
-    saveUser(newUser);
+  // Real Firebase Registration
+  const register = async (fullName: string, email: string, pass: string, role: UserRole): Promise<boolean> => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+      const fbUser = userCredential.user;
 
-    if (schoolCode && currentSchool && schoolCode.toUpperCase() !== currentSchool.invite_code) {
-      return false;
+      if (fullName) {
+        await updateProfile(fbUser, { displayName: fullName });
+      }
+
+      const newUser: UserProfile = {
+        uid: fbUser.uid,
+        email: fbUser.email || email,
+        fullName: fullName || 'Χρήστης 15Connect',
+        role,
+        schoolId: role === 'admin' ? currentSchool?.id : undefined,
+      };
+
+      saveUser(newUser);
+      return true;
+    } catch (err) {
+      console.error('Firebase Auth Register Error:', err);
+      throw err;
     }
-    return true;
   };
 
-  const register = async (fullName: string, email: string, role: UserRole): Promise<boolean> => {
-    const newUser: UserProfile = {
-      uid: `uid-${Date.now()}`,
-      email,
-      fullName,
-      role,
-      schoolId: role === 'admin' ? currentSchool?.id : undefined,
-    };
-    saveUser(newUser);
-    return true;
+  // Real Firebase Login
+  const login = async (email: string, pass: string, role: UserRole, schoolCode?: string): Promise<boolean> => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+      const fbUser = userCredential.user;
+
+      const newUser: UserProfile = {
+        uid: fbUser.uid,
+        email: fbUser.email || email,
+        fullName: fbUser.displayName || (role === 'admin' ? 'Πρόεδρος 15μελούς' : 'Μαθητής'),
+        role,
+        schoolId: currentSchool?.id,
+      };
+
+      if (schoolCode && currentSchool && schoolCode.toUpperCase() !== currentSchool.invite_code) {
+        return false;
+      }
+
+      saveUser(newUser);
+      return true;
+    } catch (err) {
+      console.error('Firebase Auth Login Error:', err);
+      throw err;
+    }
   };
 
-  const logout = () => {
+  // Real Firebase SignOut
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.error('Firebase SignOut Error:', e);
+    }
     saveUser(null);
   };
 

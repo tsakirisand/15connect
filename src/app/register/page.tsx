@@ -37,13 +37,17 @@ function RegisterFormContent() {
       return;
     }
 
+    if (password.length < 6) {
+      setError('Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 6 χαρακτήρες.');
+      return;
+    }
+
     if (role === 'student') {
       if (!inviteCode.trim() || inviteCode.length < 4) {
         setError('Απαιτείται έγκυρος 4-ψήφιος κωδικός πρόσκλησης σχολείου.');
         return;
       }
 
-      // Check invite code
       if (currentSchool && inviteCode.toUpperCase() !== currentSchool.invite_code) {
         setError('Ο κωδικός πρόσκλησης δεν αντιστοιχεί σε κάποιο σχολείο. Ζητήστε τον κωδικό από το 15μελές σας.');
         return;
@@ -53,24 +57,26 @@ function RegisterFormContent() {
     setLoading(true);
 
     try {
-      // 1. Create account
-      const success = await register(fullName, email, role);
-      if (!success) {
-        setError('Αποτυχία δημιουργίας λογαριασμού. Δοκιμάστε ξανά.');
-        setLoading(false);
-        return;
-      }
+      // Real Firebase Auth creation
+      await register(fullName, email, password, role);
 
-      // 2. Redirect according to role
       if (role === 'admin') {
         router.push('/onboarding/create-school');
       } else {
         await joinSchoolByCode(inviteCode);
         router.push('/dashboard');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('Προέκυψε σφάλμα κατά την εγγραφή.');
+      if (err?.code === 'auth/email-already-in-use') {
+        setError('Το email χρησιμοποιείται ήδη. Παρακαλούμε συνδεθείτε.');
+      } else if (err?.code === 'auth/invalid-email') {
+        setError('Μη έγκυρη διεύθυνση email.');
+      } else if (err?.code === 'auth/weak-password') {
+        setError('Ο κωδικός πρόσβασης είναι πολύ αδύναμος.');
+      } else {
+        setError('Αποτυχία δημιουργίας λογαριασμού Firebase: ' + (err?.message || 'Σφάλμα'));
+      }
     } finally {
       setLoading(false);
     }
@@ -88,7 +94,7 @@ function RegisterFormContent() {
             Δημιουργία Λογαριασμού
           </h1>
           <p className="text-xs text-slate-500">
-            Πρέπει να δημιουργήσετε λογαριασμό για πρόσβαση στο 15Connect
+            Εγγραφή χρήστη μέσω Firebase Authentication
           </p>
         </div>
 
@@ -156,7 +162,7 @@ function RegisterFormContent() {
 
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-              Κωδικός Πρόσβασης *
+              Κωδικός Πρόσβασης (min. 6 χαρακτήρες) *
             </label>
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
@@ -171,7 +177,6 @@ function RegisterFormContent() {
             </div>
           </div>
 
-          {/* Student Requires School Invite Code */}
           {role === 'student' && (
             <div className="pt-1">
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
@@ -185,13 +190,10 @@ function RegisterFormContent() {
                   required
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                  placeholder="ΚΩΔΙΚΟΣ (π.χ. VMD2)"
+                  placeholder="ΚΩΔΙΚΟΣ"
                   className="w-full pl-9 pr-4 py-3 font-mono font-bold tracking-widest bg-slate-50 text-blue-600 rounded-xl border border-slate-200 text-base uppercase focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                Πληκτρολογήστε τον κωδικό που σας έδωσε το 15μελές συμβούλιο.
-              </p>
             </div>
           )}
 
@@ -207,7 +209,7 @@ function RegisterFormContent() {
             disabled={loading}
             className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 transition text-sm"
           >
-            {loading ? 'Εγγραφή...' : role === 'admin' ? 'Εγγραφή & Συνέχεια στη Δημιουργία Σχολείου' : 'Εγγραφή & Είσοδος στο Σχολείο'}
+            {loading ? 'Δημιουργία...' : role === 'admin' ? 'Εγγραφή & Συνέχεια στη Δημιουργία Σχολείου' : 'Εγγραφή & Είσοδος στο Σχολείο'}
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
