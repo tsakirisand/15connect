@@ -1,7 +1,7 @@
 # 15Connect 🎓
 
 <p align="center">
-  <img src="public/banner.svg" alt="15Connect — bring your student council community together" width="100%" />
+  <img src="public/banner.svg" alt="15Connect — announcements, school events, and student ideas in one place" width="100%" />
 </p>
 
 > **The modern digital web platform for Greek high school student councils ("15-member councils").**
